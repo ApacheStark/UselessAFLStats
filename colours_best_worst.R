@@ -26,7 +26,6 @@ colour_df <- tibble(team = sort(unique(teams)),
                              NA, 'white'))
 
 colour_df2 <- tibble(team = NA, colour = NA)
-
 for (i in 1:nrow(colour_df)) {
   for (j in 2:4) {
     if (!is.na(colour_df[i,j])) {
@@ -36,29 +35,47 @@ for (i in 1:nrow(colour_df)) {
     }
   }
 }
-
 colour_df2 <- colour_df2 %>% filter(!is.na(team))
+
+colour_wts <- colour_df2 %>% count(colour) %>% arrange(desc(n))
 
 gf_winners_losers <- match_history_df %>% 
   mutate(winner = case_when(Home.Points > Away.Points ~ Home.Team,
                             Away.Points > Home.Points ~ Away.Team),
          loser = case_when(Home.Points < Away.Points ~ Home.Team,
-                          Away.Points < Home.Points ~ Away.Team))
+                          Away.Points < Home.Points ~ Away.Team)) %>% 
+  filter(!is.na(winner))
 
-gf_winners_losers %>% 
+# Totals
+col_wins <- gf_winners_losers %>% 
   count(winner) %>% 
   left_join(colour_df2, by = c('winner' = 'team')) %>% 
   group_by(colour) %>% 
   summarise(total.wins = sum(n)) %>% 
   arrange(desc(total.wins))
 
-gf_winners_losers %>% 
+col_loss <- gf_winners_losers %>% 
   count(loser) %>% 
   left_join(colour_df2, by = c('loser' = 'team')) %>% 
   group_by(colour) %>% 
-  summarise(total.loses = sum(n)) %>% 
-  arrange(desc(total.loses))
+  summarise(total.losses = sum(n)) %>% 
+  arrange(desc(total.losses))
 
 
+col_ratio <- col_loss %>% 
+  left_join(col_wins, by = 'colour') %>% 
+  mutate(ratio = total.wins/total.losses,
+         ratio = ifelse(is.na(ratio), 0, ratio)) %>% 
+  arrange(desc(ratio))
+  
 
+# Save
+data_list <- list(
+  colour_win_loss_ratio = col_ratio,
+  gf_winners_losers,
+  team_colours = colour_df2
+)
+
+saveRDS(data_list,
+        'OUT/colour_win_loss/colour_win_loss.RDS')
 
