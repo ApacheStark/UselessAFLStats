@@ -6,21 +6,22 @@ match_history <- fitzRoy::get_match_results()
 
 match_history_chokes <- match_history %>% 
   as_tibble() %>% 
-  mutate(Home.shots = Home.Goals + Home.Behinds,
-         Away.shots = Away.Goals + Away.Behinds,
+  mutate(Home.Shots = Home.Goals + Home.Behinds,
+         Away.Shots = Away.Goals + Away.Behinds,
          Winner = case_when(Home.Points > Away.Points ~ Home.Team,
                             Away.Points > Home.Points ~ Away.Team),
          Loser = case_when(Home.Points < Away.Points ~ Home.Team,
                            Away.Points < Home.Points ~ Away.Team),
          Choke = case_when(
-           Home.shots > Away.shots & Home.Team == Loser ~ TRUE,
-           Home.shots < Away.shots & Away.Team == Loser ~ TRUE,
+           Home.Shots > Away.Shots & Home.Team == Loser ~ TRUE,
+           Home.Shots < Away.Shots & Away.Team == Loser ~ TRUE,
            TRUE ~ FALSE
          ),
+         Shot.Deficit = abs(Home.Shots - Away.Shots),
          Season = lubridate::year(Date)) %>% 
-  select(Date, Home.Team, Home.shots, Home.Points, 
-         Away.Team, Away.shots, Away.Points, 
-         Loser, Choke, Season)
+  select(Date, Home.Team, Home.Goals, Home.Behinds, Home.Shots, Home.Points, 
+         Away.Team, Away.Goals, Away.Behinds, Away.Shots, Away.Points, 
+         Loser, Choke, Shot.Deficit, Season, Round.Type, Round)
 
 seasons_by_team <- match_history_chokes %>% 
   select(Season, Team = Home.Team) %>% 
@@ -42,6 +43,13 @@ all_time_choke <- match_history_chokes %>%
   filter(Choke) %>% 
   count(Loser) %>% 
   arrange(desc(n))
+
+all_time_choke_grandfinal <- match_history_chokes %>% 
+  filter(Choke == T, Round == 'GF') %>% 
+  arrange(desc(Date))
+
+# Worst deficit for GF
+all_time_choke_grandfinal %>% arrange(desc(Shot.Deficit))
 
 # All time average per season
 all_time_choke_ratio <- all_time_choke %>% 
@@ -66,6 +74,7 @@ data_list <-
     match_history_chokes,
     all_time_choke,
     all_time_choke_ratio,
+    all_time_choke_grandfinal,
     afl_choke,
     afl_choke_ratio
   )
