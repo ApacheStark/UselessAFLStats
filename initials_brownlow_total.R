@@ -6,13 +6,13 @@ afttable <- fitzRoy::get_afltables_stats()
 
 afttable_df <- afttable %>% as_tibble()
 
-afttable_df_sub <- afttable_df %>% 
+brownlow_votes <- afttable_df %>% 
   select(First.name,Surname,Brownlow.Votes) %>% 
   filter(Brownlow.Votes>0) %>% 
   mutate(First.init = toupper(str_sub(First.name, 1, 1)),
          Second.init = toupper(str_sub(Surname, 1, 1)))
 
-initials_votes <- afttable_df_sub %>% 
+initials_votes <- brownlow_votes %>% 
   group_by(First.init, Second.init) %>% 
   summarise(Total.votes = sum(Brownlow.Votes, na.rm = TRUE)) %>% 
   arrange(desc(Total.votes))
@@ -59,3 +59,16 @@ bottom_names <- afttable_df_sub %>%
   group_by(First.name, Surname) %>% 
   summarise(Total.votes = sum(Brownlow.Votes, na.rm = T)) %>% 
   arrange(desc(Total.votes))
+
+data_list <- list(
+  brownlow_votes,
+  initials_votes,
+  bottom_initials,
+  top_names,
+  second_names,
+  third_names,
+  bottom_names
+)
+
+saveRDS(data_list,
+        'OUT/initials_brownlow/brownlow_initial_votes.RDS')
