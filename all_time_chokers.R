@@ -71,12 +71,12 @@ afl_choke_ratio <- afl_choke %>%
 # Saves
 data_list <- 
   list(
-    match_history_chokes,
-    all_time_choke,
-    all_time_choke_ratio,
-    all_time_choke_grandfinal,
-    afl_choke,
-    afl_choke_ratio
+    'match_history_chokes'=match_history_chokes,
+    'all_time_choke'=all_time_choke,
+    'all_time_choke_ratio'=all_time_choke_ratio,
+    'all_time_choke_grandfinal'=all_time_choke_grandfinal,
+    'afl_choke' =afl_choke,
+    'afl_choke_ratio'=afl_choke_ratio
   )
 
 saveRDS(data_list, 'OUT/chokers/all_time_chokes.RDS')

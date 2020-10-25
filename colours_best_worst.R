@@ -71,9 +71,9 @@ col_ratio <- col_loss %>%
 
 # Save
 data_list <- list(
-  colour_win_loss_ratio = col_ratio,
-  gf_winners_losers,
-  team_colours = colour_df2
+  'colour_win_loss_ratio' = col_ratio,
+  'gf_winners_losers' = gf_winners_losers,
+  'team_colours' = colour_df2
 )
 
 saveRDS(data_list,

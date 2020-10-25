@@ -61,13 +61,13 @@ bottom_names <- afttable_df_sub %>%
   arrange(desc(Total.votes))
 
 data_list <- list(
-  brownlow_votes,
-  initials_votes,
-  bottom_initials,
-  top_names,
-  second_names,
-  third_names,
-  bottom_names
+  'Votes_Data' = brownlow_votes,
+  'Top Initials' = initials_votes,
+  'Bottom Initials' = bottom_initials,
+  'Top Names' = top_names,
+  '2nd Top Names'=  second_names,
+  '3rd Top Names'= third_names,
+  '1 Vote Initials' = bottom_names
 )
 
 saveRDS(data_list,
