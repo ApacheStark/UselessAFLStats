@@ -21,7 +21,7 @@ colour_df <- tibble(team = sort(unique(teams)),
                              'black', 'blue', 'blue', 'white','white',
                              'orange','yellow', 'blue', 'white', 'green',
                              'yellow', 'black', 'white', 'yellow'),
-                    col3 = c('yellow', 'blue', NA, NA, NA, 'white', 'white',
+                    col3 = c('yellow', 'blue', NA, NA, NA, 'yellow', 'white',
                              NA, NA, 'grey', NA, NA, NA, 'white', NA, 'white',
                              NA, 'white'))
 
